@@ -1,0 +1,42 @@
+Demo 一份簡單的投影片製作
+  梓育
+
+* Golang - Present
+安裝很簡單，我們只需要執行
+
+
+  $> go get -u -v golang.org/x/tools/cmd/present
+  $> go install golang.org/x/tools/cmd/present
+
+.link https://godoc.org/golang.org/x/tools/present present的官方文件
+
+* 一份基本的投影片怎麼做呢？
+那我們先看看第一頁的前面兩頁是怎麼做出來的
+.image images/demo1.png 400 800
+* 一些常用的方式
+
+  如果我們要有這樣的文字筐
+  我們只需要在文字前面加上一個tab
+
+
+- 分點事項：在分點事項前面加上「 - 」
+- 分點事項：要多少就多多少 :D
+
+_italic_：我們用「 _ 」包著文字
+*粗體字* ：我們用「 * 」包著文字
+Markup—_especially_italic_text_—在句子中用「 _ 」包著詞也會有包含空白
+像是*指標的粗體：用兩個*包著兩個*,呈現為 ***ptr*
+
+
+* 下一頁的開始
+
+* 如果我們在投影片要直接跑程式碼
+
+文件中加入
+  .play 程式碼路徑/xxx.go /^func 要DEMO的func名字/,/^}/
+
+  e.g. 如果你今天的Golang101資料夾有一個hello的程式碼，裡面只有main函數
+      .play tools/hello.go /^func main/,/^}/
+Result:
+
+.play tools/hello.go /^func main/,/^}/

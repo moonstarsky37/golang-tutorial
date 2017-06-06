@@ -1,0 +1,296 @@
+Golang101—讓我們從最基本的開始
+  梓育
+
+* 話說在前
+上次的投影片，應該裝好了自己的環境了
+如果真的還沒裝完待會也可以問
+但如果今天就想要練習個話，請善用
+.link https://play.golang.org/ 遊戲場
+
+
+那我們就開始吧～
+
+* Basic Component
+
+* Component of go program
+基本上，一份golang的程式碼都是由packages組成的
+不過我們會在一份_XXX.go_寫法上我們可以看出程式碼會有兩個分區
+- 套件Package
+- 函數Function
+
+而一個基本的寫法就如下圖
+.image images/001.png 400 600
+
+* Component of go program
+第一個區塊 Package ：
+- 定義我們這份.go寫了哪些packages
+- 外部引用了哪些別人的套件
+e.g.
+
+  package main
+
+  import (
+  	"fmt"
+  	"math"
+  )
+
+註一：引用套件的mark?
+註二：如果要多重引用？
+
+* Component of go program
+第二個區塊 Function ：
+Golang的函數比較特別的地方是
+1. 型別的宣告位置
+2. 連續同型別參數宣告
+3. Nacked return
+
+概念.
+
+  func main(argc int, argv []string) int
+
+一個簡單的例子
+
+.play tools/swap/swap.go /START OMIT/,/END OMIT/
+
+
+* Component of go program
+- 宣告的型別
+
+  bool
+
+  string
+
+  int  int8  int16  int32  int64
+  uint uint8 uint16 uint32 uint64 uintptr
+
+  byte // alias for uint8
+
+  rune // alias for int32
+     // represents a Unicode code point
+
+  float32 float64
+
+  complex64 complex128
+
+- 函數內呼叫其他函數
+
+
+* Component of go program
+e.g.，我們想計算 *π* 的值
+.code tools/calculate_pi_term/calculate_pi_term.go /^func pi/,/^}/
+.code tools/calculate_pi_term/calculate_pi_term.go /^func term/,/^}/
+.play tools/calculate_pi_term/calculate_pi_term.go /^func main/,/^}/
+
+* Variables
+在golang，宣告變數的時候我們使用 *var* 來開始一串變數的宣告
+並在結尾宣告這串變數的型別
+e.g.
+
+  var c, python, java bool
+
+如果我們變數可以設定起始值
+則我們可以省去型別的宣告
+
+e.g.
+
+  var i, j int = 1, 2
+  var c, python, java = true, false, "no!"
+
+* Variables
+而這樣子的宣告順序，我們就可以直接翻譯成
+
+e.g.
+
+  var  <==> 宣告變數
+  i    <==> i
+  ,    <==> 和
+  j    <==> j
+  int  <==> 為整數型別
+   =   <==> ，且起始值分別為
+  1,2  <==> 1和2
+
+所以為了讓函數和變數得宣告方式一樣，我們在定義函數的時候才會是像
+
+  func main(argc int, argv []string) int
+
+* Variables
+如果我們今天變數的scope是在函數「裡面」
+我們也可以將變數的宣告寫成
+
+  c, python, java := true, false, "no!"
+
+但函數外部是不能這樣使用的
+
+* Variables
+而剛剛我們使用了一些無起始值宣告
+在golang的官方文件指定
+_explicit_initial_value_are_given_their_zero_value_
+.play tools/zero.go
+
+* Variables
+而這樣個設計是因為go提供了在變數宣告後
+可以進行型別轉換的方式如下
+.play tools/type-conversion.go
+
+* Variables
+另一種我們常用的型別 *Constant*
+他的宣告如下
+.play tools/constant.go
+
+註：const的宣告不能用 *:=*
+
+
+* Flow control statements
+
+* Looping
+在go裡面，使用迴圈的關鍵字只有一個 *for*
+而基本寫法的for需要
+
+- the init statement: executed before the first iteration
+- the condition expression: evaluated before every iteration
+- the post statement: executed at the end of every iteration
+
+而且比較特別的是，我們不需要括弧括著for的條件
+e.g.
+
+  sum := 0
+  for i := 0; i < 10; i++ {
+    sum += i
+  }
+
+* Looping
+如果要寫成其他語言中像是 _while_ 的形式
+e.g.
+
+  sum := 1
+  for sum < 1000 {
+    sum += sum
+  }
+
+* Condition - if/else
+
+在go裡面，使用if也不需要括弧括著for的條件，如下
+
+  if 條件 { ... } else if 條件{ ... } else { ... }
+
+不過我們可以利用 ; 來在for的scope裡面宣告變數
+.play tools/if_with_a_short_statement.go /START OMIT/,/END OMIT/
+
+* Condition - switch
+
+在go裡面，switch也可以利用 ; 來在for的scope裡面宣告變數
+
+  switch 條件 {
+    case 情況:
+      ...
+    case 情況:
+      ...
+    default:
+      ...
+  }
+
+* Condition - switch
+e.g.
+
+.play tools/switch.go /START OMIT/,/END OMIT/
+
+* Defer
+go program的執行是由上而下
+*defer* 會延遲所指定的function執行，直到其他的函數執行（或return）結束
+.play tools/defer.go /START OMIT/,/END OMIT/
+也就是可以達到後進先出(LIFO)的結果
+.play tools/defer2.go /START OMIT/,/END OMIT/
+
+* More types
+
+* Pointer
+Go 和C一樣有 pointers這種型別.
+Def.
+
+_A_pointer_holds_the_memory_address_of_a_value._
+_The_type_*T_is_a_pointer_to_a_T_value._Its_zero_value_is_nil._
+
+另外
+- The & operator generates a pointer to its operand.
+- The * operator denotes the pointer's underlying value.
+
+所以我們我們可以這樣使用
+
+  var p *int
+  i := 42
+  p = &i
+
+  fmt.Println(*p) // read i through the pointer p
+  *p = 21         // set i through the pointer p
+
+* Pointer
+e.g.
+
+.play tools/pointer.go /START OMIT/,/END OMIT/
+
+
+* Struct
+和C一樣的，go也有提供struct的建成
+
+.play tools/struct.go /START OMIT/,/END OMIT/
+
+* Arrays
+Def.
+_The_type_[n]T_is_an_array_of_n_values_of_type_T._
+
+.play tools/array.go /START OMIT/,/END OMIT/
+
+所以這樣的訂法，是無法將這樣的變數resize的
+
+* Slices
+在go裡面，提供 *Slices* 這種型別，讓變數能夠自動改變大小
+
+Def.
+_The_type_[]T_is_a_slice_with_elements_of_type_T._
+
+.play tools/slice.go /START OMIT/,/END OMIT/
+
+* Slices
+註一：slice這種型別的預設值為nil
+也就是沒有裝著任何資料(capacity of 0)且長度為0(length of 0)
+.play tools/slice_is_nil.go /START OMIT/,/END OMIT/
+
+* Slices
+slice的兩種常用內建function
+- make
+.play tools/slice_make.go /START OMIT/,/END OMIT/
+
+* Slices
+- append
+.play tools/slice_append.go /START OMIT/,/END OMIT/
+
+* Slices
+Exercise:
+利用slice生成一個tic-tac-toe的局面
+e.g.
+
+  X _ X
+  O _ X
+  _ _ O
+
+* Range
+在for 經常需要用到一種型別 Range
+基本上在for的使用需要兩個參數
+- index
+- copy of the element at that index
+e.g.
+
+.play tools/range.go /START OMIT/,/END OMIT/
+
+* Maps
+在go裡面，Maps就是一個key-value的pair
+這種型別的預設值為nil
+.play tools/maps.go /START OMIT/,/END OMIT/
+
+* Maps
+也可以利用key來對應資料
+.play tools/maps2.go /START OMIT/,/END OMIT/
+
+* Maps
+Maps還有一些常見的操作
+.play tools/maps3.go /START OMIT/,/END OMIT/
