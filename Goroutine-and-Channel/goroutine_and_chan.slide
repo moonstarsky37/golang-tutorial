@@ -1,0 +1,190 @@
+Goroutine && Chan
+Golang 讀書會
+8 Jun 2017
+
+Ming-hao, Li
+CSIE, NCU
+leemiyinghao@gmx.com
+http://plurk.com/leemiyinghao
+http://fb.me/catleehatsune
+
+* `go` in Go
+
+* Begin with example we talked about last week...
+
+.code pi-lastweek.go /^func term/,/^}/
+.code pi-lastweek.go /^func pi/,/^}/
+.play pi-lastweek.go /^func main/,/^}/
+
+* It works, why?
+.image mycodework.jpg _ 600
+
+* Goroutine
+
+Official Def.:
+
+   A goroutine is a lightweight thread managed by the Go runtime.
+
+- Easy to use
+- Easy to managed
+- Very very lightweight
+.image gophercomplex1.jpg
+
+* Easy to use
+
+.code pi-lastweek.go /^func term/,/^}/
+.code pi-lastweek.go /^func pi/,/^}/
+.play pi-lastweek.go /^func main/,/^}/
+
+* Equivalent code in C
+
+.code pi-lastweek.c /^int main/,/^}/
+.code pi-lastweek.c /^void term/,/^}/
+
+* Equivalent code in C
+
+.code pi-lastweek.c /^double pi/,/^}/
+
+* Very very lightweight
+
+.code many-many-goroutine.go /^func a/,/^}/
+.code many-many-goroutine.go /^func main/,/^}/
+
+* Goroutine is good,
+
+- but where is the return value?
+.image whereisit.jpg _ 800
+
+* Check the code again
+
+.code pi-lastweek.go /^func term/,/^}/
+.code pi-lastweek.go /^func pi/,/^}/
+.play pi-lastweek.go /^func main/,/^}/
+
+* Channel "CHAN"
+
+   // Allocate a int typed chan, assign to ch
+   ch := make(chan int)
+
+   // Send v to channel ch.
+   ch <- v
+
+   // Receive from ch, and assign value to v.
+   v := <-ch
+
+.image gopherbw.png 200 _
+
+* How does it work?
+
+.image Mutex.png _ 800
+- *chan* locks as full
+- *chan* release as empty
+- *goroutine* only get data from full *chan*, otherwise it wait
+- *goroutine* only write data to empty *chan*, otherwise it wait
+
+* Example: word-chap
+
+.code wood-chap.go /^func chap/,/^}/
+.play wood-chap.go /^func main/,/^}/
+
+* Example: ping-pong
+
+.code ping-pong.go 8,14
+.play ping-pong.go 15,
+
+* Example: ping-pong-2
+
+.code ping-pong2.go 8,14
+.play ping-pong2.go 15,
+
+* EXECISE 1
+.code rock-paper-scissor.go /^func robot/,/^}/
+.code rock-paper-scissor.go 19,30
+
+* EXECISE 1
+.code rock-paper-scissor.go 31,
+
+* Are you done?
+.image paper-scissor-stone.jpg _ 600
+
+* Useful tool, gofmt
+
+   gofmt filename.go
+
+.image gofmt.png
+
+* 聽說選上面的年紀比較大？
+
+.image you-r-older.jpg _ 600
+
+* Tips
+
+.image you-can-not-pass.png _ 400
+.code fail-compile.go 7,
+
+   ./fail-compile.go:8: syntax error: unexpected semicolon or newline before {
+
+* Do you remember that
+- func() can be passed around?
+
+* chan func()
+
+- Sure, we can make a chan as type "func()"
+
+   ch := make(chan func())
+   func some-goroutine-func(ch chan func())
+
+- However, *func()* is not equal to *func(arg int)* or *func(arg string)*
+.code fail.go 7,
+   ./fail.go:13: cannot use test (type func(string)) as type func() in send
+   ./fail.go:14: cannot use func literal (type func(int)) as type func() in send
+
+* Example: Multi-File-Writer
+
+.code multifile_writer.go /^func read_filelist/,/^}/
+.play multifile_writer.go /^func main/,/^}/
+
+* Duck-Typing
+
+Golang use Duck-Typing
+
+.image duck-typing.png
+
+   don't check whether it IS-a duck: check whether it QUACKS-like-a duck, WALKS-like-a duck
+
+* Duck-Typing
+
+- C#, Common Lisp, Python, Objective-C, etc
+- Class not matter
+- Method that matter
+
+* Interface & method
+
+- In golang, methods and datas are sparated
+
+   type api interface { ...
+
+   type data struct { ...
+
+   func (d data) select(name string) { ...
+
+* Example: Duck
+.code interface.go 7,20
+
+* Example: Duck
+.code interface.go 22,36
+
+* Example: Duck
+.play interface.go /^func main/,/^}/
+
+* Extra Reading: Buffered Chan
+
+   func main() {
+       messages := make(chan string, 2)
+   
+       messages <- "buffered"
+       messages <- "channel"
+   
+       fmt.Println(<-messages)
+       fmt.Println(<-messages)
+   }
