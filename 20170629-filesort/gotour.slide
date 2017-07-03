@@ -1,0 +1,63 @@
+	Golang Study Group
+	 Yu-Neng Chuang
+
+	*File
+	與 R 還有 Python 很像，GO也有自己好用的寫入檔案或讀取檔案的語法
+	
+	*File
+	讀入或寫入檔案
+	利用內建的os 中的 Open
+	通常我們會使用下面的code來開啟我們要的檔案
+		
+		$file, err := os.Open("exercise.txt")	
+	
+	*File
+	當然你也可以懶得設定回傳值
+	
+		$file, \_ :=os.open("exerciese.txt")
+	
+	
+	*File
+	WARNING!!! 
+	最後要使用defer以確保檔案有被正確的關閉
+
+		$defer file.Close()
+	
+	*Sort
+	import ("sort")
+	排列任意的資料
+	使用前必須先預定義一些條件
+
+	*Sort
+	以上面的code 為例
+	創造一個 New type (ByName) ≡ 我們想要排列的 New slice 
+ 	接著創造 3 個 method : Len , Less , Swap (至少要這三個method)
+
+	*Small Practice
+	• Using the code upon and Create a new slice that sorted by age.
+	• Date :
+		Jill, 8 years old
+		Jack, 9 years old 
+		Allen, 17 years old 
+		Makio , 17 years old
+
+	*List 
+	List ? 當我智障?
+	和R或Python也不大相同，無法直接使用
+	需要特別引入才能使用	
+	
+	*List
+	首先，你要先 import ("container/list") 
+	你可以用 var x list.List 來先定義 List x 
+	使用Pushback 函數
+	最後利用 For 迴圈將一個一個取出
+
+	*List
+	其他好用的List function
+          Len : func(l *List)Len() 
+          Front : func(l *List)Front()
+          Back : func(l *List)Back()
+
+	*THANK YOU
+	 YU NENG CHUANG 
+	 NCCU Dep. of Math
