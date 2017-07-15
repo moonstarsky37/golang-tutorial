@@ -1,0 +1,110 @@
+Signal in Golang
+  YEE
+
+* Outline
+- Signal
+- Signal flow
+- Signal種類
+- Default behavior of signals in Go programs
+- Changing the behavior of signals in Go programs
+- Issue a signal
+- Graceful Terminate
+- Toggling Verbose Logging
+- Reloading configuration file
+
+
+* Signal
+- Signal is a notification, a message sent by either operating system or some application to your program (or one of its threads).
+- 軟中斷。
+- 訊號是Unix、類Unix以及其他POSIX相容的作業系統中行程間通訊的一種方式。
+- 它是一種非同步的通知機制，用來提醒行程一個事件已經發生。
+- 當一個訊號傳送給一個行程，作業系統中斷了行程正常的控制流程，此時，任何非原子操作都將被中斷。
+- 如果行程定義了訊號的處理常式，那麼它將被執行，否則就執行預設的處理常式。
+
+* Signal flow
+.image linux_signal_flow.png
+
+* Signal種類
+  kill -l
+
+  Signal Name	Number	Description
+  SIGHUP	1	Hangup (POSIX) kill -HUP pid
+  SIGINT	2	Terminal interrupt (ANSI) Ctrl-C (windows only support this)
+  SIGQUIT	3	Terminal quit (POSIX)
+  SIGILL	4	Illegal instruction (ANSI)
+  SIGTRAP	5	Trace trap (POSIX)
+  SIGIOT	6	IOT Trap (4.2 BSD) 
+  SIGBUS	7	BUS error (4.2 BSD)
+  SIGFPE	8	Floating point exception (ANSI)
+  SIGKILL	9	Kill (can't be caught or ignored) (POSIX) kill -9 pid
+  SIGUSR1	10	User defined signal 1 (POSIX) kill -s USR1 pid
+  SIGSEGV	11	Invalid memory segment access (ANSI)
+  SIGUSR2	12	User defined signal 2 (POSIX)
+  SIGPIPE	13	Write on a pipe with no reader, Broken pipe (POSIX)
+  SIGALRM	14	Alarm clock (POSIX)
+  SIGTERM	15	Termination (ANSI)
+  SIGSTKFLT	16	Stack fault
+  SIGCHLD	17	Child process has stopped or exited, changed (POSIX)
+  SIGCONT	18	Continue executing, if stopped (POSIX)
+  SIGSTOP	19	Stop executing(can't be caught or ignored) (POSIX)
+  SIGTSTP	20	Terminal stop signal (POSIX)
+  SIGTTIN	21	Background process trying to read, from TTY (POSIX)
+  SIGTTOU	22	Background process trying to write, to TTY (POSIX)
+  SIGURG	23	Urgent condition on socket (4.2 BSD)
+  SIGXCPU	24	CPU limit exceeded (4.2 BSD)
+  SIGXFSZ	25	File size limit exceeded (4.2 BSD)
+  SIGVTALRM	26	Virtual alarm clock (4.2 BSD)
+  SIGPROF	27	Profiling alarm clock (4.2 BSD)
+  SIGWINCH	28	Window size change (4.3 BSD, Sun)
+  SIGIO	29	I/O now possible (4.2 BSD)
+  SIGPWR	30	Power failure restart (System V)
+    
+* Default behavior of signals in Go programs
+- A SIGHUP, SIGINT, or SIGTERM signal causes the program to exit.
+- A SIGQUIT, SIGILL, SIGTRAP, SIGABRT, SIGSTKFLT, SIGEMT, or SIGSYS signal causes the program to exit with a stack dump.
+- A SIGTSTP, SIGTTIN, or SIGTTOU signal gets the system default behavior (these signals are used by the shell for job control)
+- The SIGPROF signal is handled directly by the Go runtime to implement runtime.CPUProfile.
+- Other signals will be caught but no action will be taken.
+
+* Changing the behavior of signals in Go programs
+  func Notify(c chan<- os.Signal, sig ...os.Signal)
+  改變信號處理，可以改變信號的默認行為
+  
+  func Ignore(sig ...os.Signal)
+  可以忽略信號
+  
+  func Reset(sig ...os.Signal)
+  重置信號為默認行為
+  
+  func Stop(c chan<- os.Signal)
+  停止接收信號，但並沒有重置為默認行為
+
+* 
+.code signal_simple.go
+
+* Issue a Signal
+  func Kill(pid int, sig Signal) (err error)
+  
+* 
+.code signal_issue.go
+  
+* 
+.link https://drive.google.com/open?id=0B8lcg3oqWfaKTnVRY0x6aEpJZlE Graceful terminate
+.link https://drive.google.com/open?id=0B8lcg3oqWfaKbmk4VDhOTmVud00 Toggling Verbose logging
+.link https://drive.google.com/file/d/0B8lcg3oqWfaKUUtyaFRVbEkxNEk/view?usp=sharing Reloading configuration file
+.link https://drive.google.com/file/d/0B8lcg3oqWfaKUXJoeXhLWHM4WW8/view?usp=sharing conf.yml
+
+
+* Referenece
+unix signal
+.link https://zh.wikipedia.org/wiki/Unix%E4%BF%A1%E5%8F%B7
+Linux信号处理机制
+.link http://hutaow.com/blog/2013/10/19/linux-signal/
+linux signal
+.link http://www.comptechdoc.org/os/linux/programming/linux_pgsignals.html
+Toggling Verbose Logging, Reloading_Configuration_File.go
+.link http://blog.mbassem.com/2016/05/15/handling-user-defined-signals-in-go/
+
+go get gopkg.in/yaml.v2
+
+
