@@ -1,0 +1,143 @@
+Golang
+  presenter:聖淵
+
+* Package
+
+你可以有個原始碼是 hello.go，位於 src/goexample 底下
+
+  package goexample
+
+  import "fmt"
+
+  func Hello() {
+          fmt.Println("Hello")
+  }
+
+還可以有個 hi.go，位於 src/goexample 底下
+
+  package goexample
+
+  import "fmt"
+
+  func Hi() {
+          fmt.Println("Hi")
+  }
+
+* Package-test
+就可以執行
+
+  package main
+
+  import "goexample"
+
+  func main() {
+          goexample.Hi()
+          goexample.Hello()
+  }
+
+可以建立一個 src/cc/openhome 目錄，然後將方才的 hello.go 與 hi.go 移至該目錄之中，接著執行 go install cc/openhome/goexample
+
+  package main
+
+  import "cc/openhome/goexample"
+
+  func main() {
+          goexample.Hi()
+          goexample.Hello()
+  }
+* First-class function
+
+例如你定義一個取最大值的函式 max，你可以將此函式作為值傳遞給 maximum
+
+.play test01.go
+
+可以看到，被 max 參考的函式，也被 maximum 參考著，因而，現在透過 max 或者 maximum，都可以呼叫函式。
+
+* First-class function
+
+那麼，max 或者是 maximum 的型態是什麼呢
+
+.play test02.go
+
+* First-class function
+
+.play test03.go
+
+若想免於冗長的函式型態宣告，可以使用 type 來定義一個新的型態名稱
+
+*   
+
+.play test04.go
+
+* First-class function
+
+.play test05.go
+
+你可以對 maximum 取指標，得到變數位址，不過，你不能對宣告的 max 取指標，去除程式中最後一個註解的話，會發生 cannot take the address of max 的錯誤。
+
+* Callback
+
+可以設計一個 filter 函式，用來過濾出符合特定條件的值
+.play test06.go /START OMIT/,/END OMIT/
+
+* 匿名函式
+我們看過函式可作為值傳遞的一個應用是，可將函式傳入另一函式作為Callback。
+
+.play test07.go /START OMIT/,/END OMIT/
+
+與上個範例相同，不過這次傳遞了匿名函式給 filter，可以看到，匿名函式可使用 func 建立，同樣必須指定參數與傳回值型態。
+
+*  
+在 Go 中，不允許在函式中又宣告函式，例如，以下是不允許的
+
+  func funcA() {
+          func funcB() {
+                  ...
+          }
+          ...
+  }
+
+這會出現 “nested func not allowed” 的錯誤，我們可以這樣做
+
+  func funcA() {
+          funcB := func() {
+                  ...
+          }
+          ...
+  }
+
+*  
+
+你也可以在函式中建立匿名函式，並將之傳回
+
+.play test08.go 
+
+在上面的範例中，執行 funcA 會傳回一個函式，這個傳回的函式會將接受的引數指定給參數 n，並與 x 的值進行相加，因此最後顯示結果為 12。
+
+* Closure
+
+.play test09.go /START OMIT/,/END OMIT/
+
+看起來有點像
+
+  func main() {
+          numbers := []int {1, 2, 3, 4, 5}
+          sum := 0
+          for _, elem := range numbers {
+                  sum += elem
+          }
+          fmt.Println(sum)  // 15
+  }
+
+*  
+然而意義完全不同。在使用 forEach 函式的範例中，sum 變數被匿名函式包覆並傳入 forEach 之中，在 forEach 執行迴圈的過程中，每次呼叫傳入的函式（被 consumer 參考），就會改變 sum 的值，因此，最後得到的是加總後的值 15。
+
+看以下例子
+
+.play test10.go /START OMIT/,/END OMIT/
+
+
+*   
+Go 語言有指標，我們可以將指標的值顯示出來，這代表著變數的位址值，來看看被閉包關閉的變數，到底是怎麼一回事好了
+
+.play test11.go /START OMIT/,/END OMIT/
