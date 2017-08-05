@@ -1,0 +1,128 @@
+Revel
+Golang 讀書會
+5 Aug 2017
+
+Ming-hao, Li
+CSIE, NCU
+leemiyinghao@gmx.com
+http://plurk.com/leemiyinghao
+http://fb.me/catleehatsune
+
+* Revel
+
+* Revel is a MVC Framework for web
+
+- Simple
+- Easy
+- Fast
+
+* MVC Framework?
+
+- Model-View-Controller
+- Route
+- Template Renderer
+- Manage Tools
+
+* Example Struct in a Revel App
+.image hello.png
+
+* Example Struct in a Larger Revel App
+.image booking.png
+
+* You can expect Revel work as well as
+- Ruby on Rails
+- Django
+- CakePHP
+
+* How to Start
+
+* Install Revel
+1. Install Revel Framework
+
+   go get github.com/revel/revel
+
+2. Install Revel CMD Tools
+
+   go get github.com/revel/cmd/revel
+
+* Start a New App, and run it
+
+1. Start a New App
+
+   revel new github.com/myaccount/myapp
+
+2. Run it
+
+   revel run github.com/myaccount/myapp
+
+* Why do we need 'revel new'?
+- revel new is a tool provide by revel, it'll automatic create folders and files you need.
+- It's not required, but work with revel tool (also other MVC Framework tools) will significantly reduce manual tasks.
+
+* For example, this is init.go
+.image init_go.png _ 400
+
+- this file is require for app initial opreations
+- Sure you can manual create it.
+- But why not leaving these tasks to computer?
+
+* Back to Our First Revel App
+.image hello_revel_terminal.png
+
+* Back to Our First Revel App
+.image it_works.png _ 800
+
+* Try it yourself!
+
+* Now you have a static site
+Let's make it dynamic
+
+- add a new func to controllers/app.go
+
+   func (c App) Hello(myName string) revel.Result {
+   	return c.Render(myName)
+   }
+
+- duplicate Index.html as Hello.html in views/App/, and do some modify
+
+   <h1>It works! {{.myName}}</h1>
+
+* Visit 127.0.0.1:9000/App/Hello
+.image hello_2.png
+- seems nothing different
+
+* try to add some params...
+.image hello_3.png
+
+* Why App/Hello ?
+- App means search func in App `Struct`
+- You can check the Struct in controllers/app.go
+- Hello means the func name `Hello`
+
+* How does it know my name?
+- In http/https, there is a method call GET
+- GET params will shows in URL bar
+- after first `?` in URL, all input will be see as GET params
+- In our case, we pass a param name `myName`, with content `Minghao, Li`
+- As we just define, Hello will receive `myName`, and pass it to template
+
+* Can I deal with params in app.go?
+
+   myName = strings.ToUpper(myName)
+
+.image hello_4.png
+
+* Try it!
+.image kong-fu.jpeg _ 600
+
+* So...What is the different between Old PHP/ASP/CGI and new MVC Framework?
+
+* MVC Framework is clean
+- Template files is separate from Coding Logic
+- Model defines is indenpendent
+- Modify (Migrate) Model file is easy
+
+* MVC Framework is easy to Develop with
+- No schema design, no SQL data convert, just code
+- Re-routing is allowed
+- OO is availble in Web Back-end Develop
